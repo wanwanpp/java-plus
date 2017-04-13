@@ -25,7 +25,6 @@ public class TestBeanUtils {
         //将javabean转为map对象
         Map<String, String> describe = BeanUtils.describe(testBean);
         for (String s : describe.keySet()) {
-
             System.out.println(s + " is " + describe.get(s));
         }
 

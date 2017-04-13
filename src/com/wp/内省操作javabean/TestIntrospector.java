@@ -27,12 +27,11 @@ public class TestIntrospector {
         setProperty(bean, propertyName, newNum);
 
         //使用此工具包需要引入common-utils和common-loggingjar包，前者依赖于后者
-        System.out.println(BeanUtils.getProperty(bean,"name"));
+        System.out.println(BeanUtils.getProperty(bean, "name"));
         //PropertyUtils也可以对javabean进行属性的操作，propertyutils不会进行类型转换，而BeanUtils会。
-        System.out.println(PropertyUtils.getProperty(bean,"name"));
+        System.out.println(PropertyUtils.getProperty(bean, "name"));
 
         System.out.println(bean.getName());
-
 
 
     }
