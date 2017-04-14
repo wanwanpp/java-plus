@@ -1,0 +1,19 @@
+&Modifiers &ReturnType &MethodName(&Parameters) &Throwables
+{
+    java.lang.reflect.Method method = null;
+    try {
+        method = &Class.getMethod( \"& MethodName\", &ParameterTypes );
+    }
+    catch(Exception e){
+    }
+    Object r = null;
+    try{
+        // 代理类到被代理类方向的变量同步
+        sync(&Class, true);
+        r = handler.invoke( this, method, &ParameterValues );
+        // 被代理类到代理类方向的变量同步
+        sync(&Class, false);
+    }&Exceptions
+
+    &Return
+}
