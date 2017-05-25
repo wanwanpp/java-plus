@@ -19,6 +19,7 @@ public class CacheManager {
         try {
             return (Boolean) cacheMap.get(key);
         } catch (NullPointerException e) {
+            System.out.println("the key is not in the map");
             return false;
         }
     }

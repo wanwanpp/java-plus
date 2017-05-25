@@ -52,6 +52,8 @@ public class Cache {
 
 class Test {
     public static void main(String[] args) {
+        CacheManager.setSimpleFlag("wp",true);
+        System.out.println(CacheManager.getSimpleFlag("wp"));
         System.out.println(CacheManager.getSimpleFlag("alksd"));
 //        CacheManager.putCache("abc", new Cache());
 //        CacheManager.putCache("def", new Cache());
