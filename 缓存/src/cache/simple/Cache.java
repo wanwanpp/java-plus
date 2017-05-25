@@ -1,9 +1,9 @@
-package cache;
+package cache.simple;
 
 public class Cache {
     private String key;//缓存ID
     private Object value;//缓存数据
-    private long timeOut;//更新时间
+    private long timeOut;//过期时间
     private boolean expired; //是否终止
 
     public Cache() {
@@ -52,15 +52,15 @@ public class Cache {
 
 class Test {
     public static void main(String[] args) {
-        CacheManager.setSimpleFlag("wp",true);
-        System.out.println(CacheManager.getSimpleFlag("wp"));
-        System.out.println(CacheManager.getSimpleFlag("alksd"));
+//        CacheManager.setSimpleFlag("wp",true);
+//        System.out.println(CacheManager.getSimpleFlag("wp"));
+//        System.out.println(CacheManager.getSimpleFlag("alksd"));
 //        CacheManager.putCache("abc", new Cache());
 //        CacheManager.putCache("def", new Cache());
 //        CacheManager.putCache("ccc", new Cache());
-//        CacheManager.clearOnly("");
+//        CacheManager.clearKey("");
 //        Cache c = new Cache();
-//        for (int i = 0; i &lt; 10; i++) {
+//        for (int i = 0; i < 10; i++) {
 //            CacheManager.putCache("" + i, c);
 //        }
 //        CacheManager.putCache("aaaaaaaa", c);
@@ -69,9 +69,10 @@ class Test {
 //        CacheManager.putCache("abcoqiwhcy", c);
 //        System.out.println("删除前的大小："+CacheManager.getCacheSize());
 //        CacheManager.getCacheAllkey();
-//        CacheManager.clearAll("aaaa");
+//        CacheManager.clearAll("a");
 //        System.out.println("删除后的大小："+CacheManager.getCacheSize());
 //        CacheManager.getCacheAllkey();
+
 
 
     }

@@ -1,4 +1,4 @@
-package cache;
+package cache.simple;
 
 import java.util.*;
 
@@ -32,25 +32,19 @@ public class CacheManager {
         }
     }
 
+    public static boolean isCached(String key) {
+        return cacheMap.get(key) != null;
+    }
+
     //设置布尔值的缓存 
     public synchronized static boolean setSimpleFlag(String key, boolean flag) {
-        if (flag == getSimpleFlag(key)) {//假如为真不允许被覆盖
+        if (isCached(key) && flag == getSimpleFlag(key)) {//假如为真不允许被覆盖
             return false;
         } else {
             cacheMap.put(key, flag);
             return true;
         }
     }
-
-    public synchronized static boolean setSimpleFlag(String key, long serverbegrundt) {
-        if (cacheMap.get(key) == null) {
-            cacheMap.put(key, serverbegrundt);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
     //得到缓存。同步静态方法 
     private synchronized static Cache getCache(String key) {
@@ -67,21 +61,21 @@ public class CacheManager {
         cacheMap.clear();
     }
 
-    //清除某一类特定缓存,通过遍历HASHMAP下的所有对象，来判断它的KEY与传入的TYPE是否匹配 
+    //符合以type变量内容开头的key会被删除掉
     public synchronized static void clearAll(String type) {
         Iterator i = cacheMap.entrySet().iterator();
         String key;
-        ArrayList arr = new ArrayList();
+        List arr = new ArrayList();
         try {
             while (i.hasNext()) {
-                java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
+                Map.Entry entry = (Map.Entry) i.next();
                 key = (String) entry.getKey();
                 if (key.startsWith(type)) { //如果匹配则删除掉 
                     arr.add(key);
                 }
             }
             for (int k = 0; k < arr.size(); k++) {
-                clearOnly((String) arr.get(k));
+                clearKey((String) arr.get(k));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -89,7 +83,7 @@ public class CacheManager {
     }
 
     //清除指定的缓存 
-    public synchronized static void clearOnly(String key) {
+    public synchronized static void clearKey(String key) {
         cacheMap.remove(key);
     }
 
@@ -133,12 +127,14 @@ public class CacheManager {
 
     //判断缓存是否终止 
     public static boolean cacheExpired(Cache cache) {
-        if (null == cache) { //传入的缓存不存在 
-            return false;
+        if (null == cache) { //传入的缓存不存在
+            throw new NullPointerException("the cache is null");
+//            return false;
         }
-        long nowDt = System.currentTimeMillis(); //系统当前的毫秒数 
-        long cacheDt = cache.getTimeOut(); //缓存内的过期毫秒数 
-        if (cacheDt <= 0 || cacheDt > nowDt) { //过期时间小于等于零时,或者过期时间大于当前时间时，则为FALSE
+        long now = System.currentTimeMillis(); //系统当前的毫秒数
+        long cacheTime = cache.getTimeOut(); //缓存内的过期毫秒数
+
+        if (cacheTime <= 0 || cacheTime > now) { //过期时间小于等于零时,或者过期时间大于当前时间时，则为FALSE
             return false;
         } else { //大于过期时间 即过期 
             return true;
@@ -171,13 +167,13 @@ public class CacheManager {
     }
 
     //获取缓存对象中的所有键值名称 
-    public static ArrayList getCacheAllkey() {
-        ArrayList a = new ArrayList();
+    public static List<Object> getCacheAllkey() {
+        List<Object> a = new ArrayList();
         try {
             Iterator i = cacheMap.entrySet().iterator();
             while (i.hasNext()) {
-                java.util.Map.Entry entry = (java.util.Map.Entry) i.next();
-                a.add((String) entry.getKey());
+                Map.Entry entry = (Map.Entry) i.next();
+                a.add(entry.getKey());
             }
         } catch (Exception ex) {
         } finally {
