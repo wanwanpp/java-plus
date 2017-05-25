@@ -1,18 +1,3 @@
-/*
- * Copyright 2016 LBK
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cache.simple;
 
 import java.util.*;
@@ -20,287 +5,290 @@ import java.util.*;
 /**
  * 简单的缓存map. 其中的元素如果一定时间内没有访问, 则会被删除.
  */
+
 public class SimpleCache<K, V> {
 
-	private long liveTime;
-	private int limit;
-	private Map<K, Entity<K, V>> map;
-	private Queue<K, V> queue;
+    // TODO: 2017/5/25 0025  用Map为什么还用了一个Queue数据结构？？
 
-	public SimpleCache(long liveTime) {
-		this(liveTime, 0);
-	}
+    private long liveTime;
+    private int limit;
+    private Map<K, Entity<K, V>> map;
+    private Queue<K, V> queue;
 
-	public SimpleCache(long liveTime, int limit) {
-		this.liveTime = liveTime;
-		this.limit = limit > 0 ? limit : 0;
-		int initialCapacity = limit == 0 ? 16 : (int) (limit * 0.8);
-		this.map = new HashMap<>(initialCapacity);
-		this.queue = new Queue<>();
-	}
+    public SimpleCache(long liveTime) {
+        this(liveTime, 0);
+    }
 
-	/**
-	 * 将指定key和value添加到缓存中. 如果该key已经存在, 则旧值被替换.
-	 *
-	 * @return 与key关联的旧值. 如果key没有任何映射关系,则返回 null.
-	 */
-	public synchronized V add(K key, V value) {
-		removeTimeOut();
+    public SimpleCache(long liveTime, int limit) {
+        this.liveTime = liveTime;
+        this.limit = limit > 0 ? limit : 0;
+        int initialCapacity = limit == 0 ? 16 : (int) (limit * 0.8);
+        this.map = new HashMap<>(initialCapacity);
+        this.queue = new Queue<>();
+    }
 
-		Entity<K, V> entity = new Entity<>(key, value, liveTime);
-		Entity<K, V> oldEntity = map.put(key, entity);
+    /**
+     * 将指定key和value添加到缓存中. 如果该key已经存在, 则旧值被替换.
+     *
+     * @return 与key关联的旧值. 如果key没有任何映射关系,则返回 null.
+     */
+    public synchronized V add(K key, V value) {
 
-		if (oldEntity != null) {
-			queue.remove(oldEntity);
-		}
-		queue.append(entity);
+        //先删除掉过时的元素
+        removeTimeOut();
 
-		// 删除多余的缓存
-		if (limit != 0 && map.size() > limit) {
-			removeFirst();
-		}
-		return oldEntity == null ? null : oldEntity.getValue();
-	}
+        Entity<K, V> entity = new Entity<>(key, value, liveTime);
+        Entity<K, V> oldEntity = map.put(key, entity);
 
-	/**
-	 * 获取与指定key关联的元素
-	 */
-	public synchronized V get(K key) {
-		removeTimeOut();
-		Entity<K, V> entity = map.get(key);
-		if (entity != null) {
-			access(entity);
-			return entity.getValue();
-		}
-		return null;
-	}
+        if (oldEntity != null) {//删除以前key值存在的Entity
+            queue.remove(oldEntity);
+        }
+        queue.append(entity);
 
-	/**
-	 * 清空缓冲区
-	 */
-	public synchronized void clear() {
-		map.clear();
-		queue.clear();
-	}
+        // TODO: 2017/5/25 0025  删除多余的缓存？？
+        if (limit != 0 && map.size() > limit) {
+            removeFirst();
+        }
 
-	/**
-	 * 获取缓存区中的元素个数
-	 */
-	public synchronized int size() {
-		removeTimeOut();
-		return map.size();
-	}
+        return oldEntity == null ? null : oldEntity.getValue();
+    }
 
-	/**
-	 * 访问指定元素. 更新该元素的过期时间, 以及在队列中的位置
-	 */
-	private synchronized void access(Entity<K, V> entity) {
-		queue.remove(entity);
-		entity.updateTimeout(liveTime);
-		queue.append(entity);
-	}
+    /**
+     * 获取与指定key关联的元素
+     */
+    public synchronized V get(K key) {
+        removeTimeOut();
+        Entity<K, V> entity = map.get(key);
+        if (entity != null) {
+            access(entity);//更新该元素的过期时间, 以及在队列中的位置
+            return entity.getValue();
+        }
+        return null;
+    }
 
-	/**
-	 * 移除所有超时的元素
-	 */
-	private synchronized void removeTimeOut() {
-		Entity<K, V> head = queue.getFirst();
-		while (head != null && head.isTimeout()) {
-			removeFirst();
-			head = queue.getFirst();
-		}
-	}
+    /**
+     * 清空缓冲区
+     */
+    public synchronized void clear() {
+        map.clear();
+        queue.clear();
+    }
 
-	/**
-	 * 移除队列中第一个元素, 并删除map中对应的元素. 注意, 调用该方法之前需要保证缓冲区中有元素
-	 */
-	private synchronized void removeFirst(){
-		map.remove(queue.removeFirst().getKey());
-	}
+    /**
+     * 获取缓存区中的元素个数
+     */
+    public synchronized int size() {
+        removeTimeOut();
+        return map.size();
+    }
 
-	private static class Queue<K, V> {
-		private Entity<K, V> head;
-		private Entity<K, V> tail;
+    /**
+     * 访问指定元素. 更新该元素的过期时间, 以及在队列中的位置
+     */
+    private synchronized void access(Entity<K, V> entity) {
+        queue.remove(entity);
+        entity.updateTimeout(liveTime);
+        queue.append(entity);
+    }
 
-		public Queue() {
-			head = null;
-			tail = null;
-		}
+    /**
+     * 移除所有超时的元素，遍历队列
+     */
+    private synchronized void removeTimeOut() {
 
-		/**
-		 * 获得第一个元素.
-		 *
-		 * @return 第一个元素. 如果没有元素, 则返回null.
-		 */
-		public Entity<K, V> getFirst() {
-			return head;
-		}
+        Entity<K, V> head = queue.getFirst();
+        while (head != null && head.isTimeout()) {
+            removeFirst();
+            head = queue.getFirst();
+        }
+    }
 
-		/**
-		 * 向队列末尾添加元素.
-		 *
-		 * @param entity
-		 *            需要添加的元素
-		 */
-		public void append(Entity<K, V> entity) {
-			if (head == null) {
-				head = entity;
-				tail = entity;
-				entity.prev = null;
-			}
-			else {
-				entity.prev = tail;
-				tail.next = entity;
-				tail = entity;
-			}
-			entity.next = null;
-		}
+    /**
+     * 移除队列中第一个元素, 并删除map中对应的元素. 注意, 调用该方法之前需要保证缓冲区中有元素
+     */
+    private synchronized void removeFirst() {
+        map.remove(queue.removeFirst().getKey());
+    }
 
-		/**
-		 * 移除第一个元素.
-		 *
-		 * @return 第一个元素. 如果没有元素, 则返回null.
-		 */
-		public Entity<K, V> removeFirst() {
-			// 没有元素
-			if (head == null) {
-				return null;
-			}
-			Entity<K, V> entity = head;
+    /**
+     * 当队列中没有元素时，head=tail=null;
+     * 当队列中只有一个元素时，head=tail!=null
+     *
+     * @param <K>
+     * @param <V>
+     */
+    private static class Queue<K, V> {
+        private Entity<K, V> head;
+        private Entity<K, V> tail;
 
-			// 只有一个元素
-			if (head == tail) {
-				head = null;
-				tail = null;
-			}
-			else {
-				head = entity.next;
-				head.prev = null;
-			}
-			return entity;
-		}
+        public Queue() {
+            head = null;
+            tail = null;
+        }
 
-		/**
-		 * 从队列中移除指定的元素. 该元素必须在队列中, 否则会出现无法预期的结果.
-		 *
-		 * @param entity
-		 *            需要移除的元素
-		 * @return 移除的元素
-		 */
-		public Entity<K, V> remove(Entity<K, V> entity) {
-			// 只有一个元素 或者 没有元素
-			if (head == tail) {
-				head = null;
-				tail = null;
-				return entity;
-			}
+        /**
+         * 获得第一个元素.
+         *
+         * @return 第一个元素. 如果没有元素, 则返回null.
+         */
+        public Entity<K, V> getFirst() {
+            return head;
+        }
 
-			if (entity.prev != null) {
-				entity.prev.next = entity.next;
-			}
-			else {
-				head = entity.next;
-			}
+        /**
+         * 向队列末尾添加元素.
+         *
+         * @param entity 需要添加的元素
+         */
+        public void append(Entity<K, V> entity) {
+            if (head == null) {//当队列为空时
+                head = entity;
+                tail = entity;
+                entity.prev = null;
+            } else {//当队列中存在元素时
+                entity.prev = tail;
+                tail.next = entity;
+                tail = entity;
+            }
+            entity.next = null;
+        }
 
-			if (entity.next != null) {
-				entity.next.prev = entity.prev;
-			}
-			else {
-				tail = entity.prev;
-			}
-			return entity;
-		}
+        /**
+         * 移除第一个元素.
+         *
+         * @return 第一个元素. 如果没有元素, 则返回null.
+         */
+        public Entity<K, V> removeFirst() {
+            // 没有元素
+            if (head == null) {
+                return null;
+            }
+            Entity<K, V> entity = head;
 
-		public void clear() {
-			head = null;
-			tail = null;
-		}
+            // 只有一个元素
+            if (head == tail) {
+                head = null;
+                tail = null;
+            } else {
+                head = entity.next;
+                head.prev = null;
+            }
+            return entity;
+        }
 
-	}
+        /**
+         * 从队列中移除指定的节点，该节点已经确定在队列中
+         */
+        public Entity<K, V> remove(Entity<K, V> entity) {
+            //只有一个节点
+            if (head == tail) {
+                head = null;
+                tail = null;
+                return entity;
+            }
 
-	public static class Entity<K, V> {
-		private K key;
-		private V value;
-		private long timeout;
-		Entity<K, V> next;
-		Entity<K, V> prev;
+            if (entity.prev != null) {//entity不是head
+                entity.prev.next = entity.next;
+            } else {
+                head = entity.next;
+            }
 
-		public Entity(K key, V value, long liveTime) {
-			this.key = key;
-			this.value = value;
-			updateTimeout(liveTime);
-		}
+            if (entity.next != null) {//entity不是tail
+                entity.next.prev = entity.prev;
+            } else {
+                tail = entity.prev;
+            }
+            return entity;
+        }
 
-		public K getKey() {
-			return key;
-		}
+        public void clear() {
+            head = null;
+            tail = null;
+        }
 
-		public void setKey(K key) {
-			this.key = key;
-		}
+    }
 
-		public V getValue() {
-			return value;
-		}
+    public static class Entity<K, V> {
+        private K key;
+        private V value;
+        private long timeout;
+        Entity<K, V> next;
+        Entity<K, V> prev;
 
-		public void setValue(V value) {
-			this.value = value;
-		}
+        public Entity(K key, V value, long liveTime) {
+            this.key = key;
+            this.value = value;
+            updateTimeout(liveTime);
+        }
 
-		public long getTimeout() {
-			return timeout;
-		}
+        public K getKey() {
+            return key;
+        }
 
-		public boolean isTimeout() {
-			return timeout < System.currentTimeMillis();
-		}
+        public void setKey(K key) {
+            this.key = key;
+        }
 
-		void updateTimeout(long liveTime) {
-			this.timeout = System.currentTimeMillis() + liveTime;
-		}
+        public V getValue() {
+            return value;
+        }
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((key == null) ? 0 : key.hashCode());
-			result = prime * result + (int) (timeout ^ (timeout >>> 32));
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
-			return result;
-		}
+        public void setValue(V value) {
+            this.value = value;
+        }
 
-		@SuppressWarnings("rawtypes")
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Entity other = (Entity) obj;
-			if (key == null) {
-				if (other.key != null)
-					return false;
-			}
-			else if (!key.equals(other.key))
-				return false;
-			if (timeout != other.timeout)
-				return false;
-			if (value == null) {
-				if (other.value != null)
-					return false;
-			}
-			else if (!value.equals(other.value))
-				return false;
-			return true;
-		}
+        public long getTimeout() {
+            return timeout;
+        }
 
-		@Override
-		public String toString() {
-			return "Entity [key=" + key + ", value=" + value + ", timeout=" + timeout + "]";
-		}
+        public boolean isTimeout() {
+            return timeout > System.currentTimeMillis();
+        }
 
-	}
+        void updateTimeout(long liveTime) {
+            this.timeout = System.currentTimeMillis() + liveTime;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((key == null) ? 0 : key.hashCode());
+            result = prime * result + (int) (timeout ^ (timeout >>> 32));
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            return result;
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Entity other = (Entity) obj;
+            if (key == null) {
+                if (other.key != null)
+                    return false;
+            } else if (!key.equals(other.key))
+                return false;
+            if (timeout != other.timeout)
+                return false;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            } else if (!value.equals(other.value))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "Entity [key=" + key + ", value=" + value + ", timeout=" + timeout + "]";
+        }
+
+    }
 
 }
