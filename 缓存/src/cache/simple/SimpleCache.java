@@ -9,6 +9,7 @@ import java.util.*;
 public class SimpleCache<K, V> {
 
     // TODO: 2017/5/25 0025  用Map为什么还用了一个Queue数据结构？？
+    //使用队列是使元素按照过期时间排序，最新的元素排在后面，越前面的元素是越快过期的。
 
     private long liveTime;
     private int limit;
@@ -45,7 +46,7 @@ public class SimpleCache<K, V> {
         }
         queue.append(entity);
 
-        // TODO: 2017/5/25 0025  删除多余的缓存？？
+        // map的容量大于了最大的容量了，删除一个元素
         if (limit != 0 && map.size() > limit) {
             removeFirst();
         }
