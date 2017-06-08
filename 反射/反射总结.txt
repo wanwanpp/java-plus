@@ -1,2 +1,13 @@
 1.反射允许在运行期获取对象的类型信息
 2.可通过getClass()，forName()，   .class三种方式获取
+
+
+反射应用：
+1.工厂模式：Factory类中用反射的话，添加了一个新的类之后，就不需要再修改工厂类Factory了
+2.数据库JDBC中通过Class.forName(Driver).来获得数据库连接驱动
+3.分析类文件：毕竟能得到类中的方法等等
+4.访问一些不能访问的变量或属性：破解别人代码
+
+注意：
+调用非静态方法时，使用invoke（object，args），object为实例对象，args为传入的参数
+调用静态方法时，使用invoke（null，args）使用null是因为静态方法中没有具体的实例对象。
