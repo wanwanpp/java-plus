@@ -12,6 +12,7 @@ public class App {
     Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
 
     @Before
     public void getConnection() {
@@ -35,7 +36,7 @@ public class App {
     }
 
     @Test
-    public void resultSet() {
+    public void statement() {
         try {
             //创建指针可以自由移动结果集ResultSet
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -75,6 +76,31 @@ public class App {
         }
     }
 
+    @Test
+    public void prepareStatement() throws SQLException {
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE name=?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+        } catch (SQLException e) {
+            System.out.println("无法获取prepareStatement");
+            e.printStackTrace();
+        }
+
+        preparedStatement.setString(1, "王萍");
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            System.out.println("id:" + resultSet.getInt(1) + " " +
+                    "name:" + resultSet.getString(2) + " " +
+                    "sex:" + resultSet.getString(3) + " " +
+                    "birthday:" + resultSet.getTimestamp(4));
+            if (resultSet.getRow() == 2) {
+
+                System.out.println("ROW is " + resultSet.getRow());//返回当前的行号
+            }
+        }
+
+
+    }
+
     @After
     public void close() {
         if (resultSet != null) {
@@ -85,7 +111,7 @@ public class App {
                 e.printStackTrace();
             }
         }
-        if (statement!=null){
+        if (statement != null) {
             try {
                 statement.close();
             } catch (SQLException e) {
@@ -93,7 +119,15 @@ public class App {
                 e.printStackTrace();
             }
         }
-        if (connection!=null){
+        if (preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                System.out.println("PreparedStatement关闭失败");
+                e.printStackTrace();
+            }
+        }
+        if (connection != null) {
             try {
                 connection.close();
             } catch (SQLException e) {
