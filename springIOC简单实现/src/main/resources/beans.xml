@@ -1,0 +1,12 @@
+<beans>
+    <!--id可以看作一个别名，class:用的是dao实现类不是dao接口-->
+    <bean id="userDao" class="com.wp.dao.impl.UserDaoImpl"></bean>
+    <bean id="userService" class="com.wp.service.impl.UserServiceImpl">
+        <!--有一个userDao属性,
+            property:顾名思义就是属性的意思,
+            name：UserServiceImpl类中的一个属性名称要和name对应
+            ref:由于这个属性是一个引用对象，随意用ref,非引用对象可以使用value
+            -->
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+</beans>
