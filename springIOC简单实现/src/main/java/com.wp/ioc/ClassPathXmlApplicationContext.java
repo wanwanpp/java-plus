@@ -22,7 +22,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 
         //同级目录下加载
 //        Document doc = sb.build(this.getClass().getResourceAsStream(xmlPath));
-        //从classpath下加载
+        //从classpath下加载   这里maven项目加载的是resources下面的beans.xml
         Document doc = sb.build(this.getClass().getClassLoader().getResourceAsStream(xmlPath));
         // 获取根元素Beans
         Element root = doc.getRootElement();
