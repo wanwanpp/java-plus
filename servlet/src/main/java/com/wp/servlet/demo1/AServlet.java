@@ -8,15 +8,16 @@ import java.io.IOException;
 
 public class AServlet extends HttpServlet {
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		//设置状态码
-			response.sendError(404, "找到也不告诉你!");
-	}
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        System.out.println("进入了AServlet");
+        //设置状态码
+        response.sendError(404, "找到也不告诉你!");
+    }
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	}
+    }
 
 }
