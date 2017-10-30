@@ -1,0 +1,2 @@
+Can-Redefine-Classes: true
+Premain-Class: com.wp.HotAgent
