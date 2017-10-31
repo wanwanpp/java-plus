@@ -17,13 +17,14 @@ public class ReloadTask extends TimerTask {
     public void run() {
         try {
             ClassDefinition[] cd = new ClassDefinition[1];
-            Class[] classes = inst.getAllLoadedClasses();
+            Class[] classes = inst.getAllLoadedClasses();           //获取加载过的所有Class对象。
             for (Class cls : classes) {
                 if (cls.getClassLoader() == null || !cls.getClassLoader().getClass().getName().equals("sun.misc.Launcher$AppClassLoader"))
                     continue;
                 String name = cls.getName().replaceAll("\\.", "/");
+                //第一个参数为需要替换的对象的Class对象，第二个参数为新加载的class文件。
                 cd[0] = new ClassDefinition(cls, loadClassBytes(cls, name + ".class"));
-                inst.redefineClasses(cd);
+                inst.redefineClasses(cd);             //执行替换JVM中class对象的操作，具体操作是一个netive方法。
             }
 
         } catch (Exception ex) {
