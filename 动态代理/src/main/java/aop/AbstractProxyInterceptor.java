@@ -1,13 +1,12 @@
 package aop;
 
 import java.lang.reflect.Method;
-
 /**
  * Created by 王萍 on 2017/11/11 0011.
  */
 public abstract class AbstractProxyInterceptor implements ProxyInterceptor {
     @Override
-    public Object intercept(ProxyInterceptorChain chain) throws Throwable {
+    public Object intercept(DefaultProxyChain chain) throws Throwable {
 
         Object result;
 

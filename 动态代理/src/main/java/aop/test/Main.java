@@ -1,6 +1,7 @@
 package aop.test;
 
-import aop.ProxyFactory;
+
+import aop.JdkCreator;
 import aop.ProxyInterceptor;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        List<ProxyInterceptor> interceptors = new ArrayList<>();
+        List<ProxyInterceptor> interceptors = new ArrayList<ProxyInterceptor>();
         interceptors.add(new TimeMonitorProxy());
         interceptors.add(new TimeMonitorProxy());
-        Dao proxy = ProxyFactory.getProxy(UserDao.class, interceptors);
+        Dao proxy = new JdkCreator().createProxy(UserDao.class, interceptors);
         proxy.insert();
         proxy.select();
     }

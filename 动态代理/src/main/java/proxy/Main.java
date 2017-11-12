@@ -31,7 +31,7 @@ public class Main {
         Class<?>[] interfaces = student.getClass().getInterfaces();
         Study proxyInstance = (Study) Proxy.newProxyInstance(classLoader,interfaces , invocation);
 
-        Study  proxyProxyInstance =(Study) Proxy.newProxyInstance(proxyInstance.getClass().getClassLoader(), proxyInstance.getClass().getInterfaces(), new ProxyInvocationImpl(proxyInstance));
+        Study proxyProxyInstance =(Study) Proxy.newProxyInstance(proxyInstance.getClass().getClassLoader(), proxyInstance.getClass().getInterfaces(), new ProxyInvocationImpl(proxyInstance));
         System.out.println("动态代理对象的类型："+proxyInstance.getClass().getName());
         proxyProxyInstance.read();
         System.out.println("---------------------------------");

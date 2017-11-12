@@ -6,15 +6,17 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
- * Created by 王萍 on 2017/11/12 0012.
+ * Created by 王萍 on 2017/11/11 0011.
  */
-public class JdkCreator implements ProxyCreator {
-    @Override
-    public <T> T getProxy(Class<?> targetClass, List<ProxyInterceptor> interceptors) {
+
+// TODO: 2017/11/11 0011 动态添加interceptor，即修改interceptors，然后重新生成代理对象。
+public class ProxyFactory {
+
+    public static <T> T getProxy(final Class<?> targetClass, final List<ProxyInterceptor> interceptors) {
         return (T) Proxy.newProxyInstance(targetClass.getClassLoader(), targetClass.getInterfaces(), new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                return new ProxyInterceptorChain(targetClass,targetClass.getConstructor().newInstance(),method,args,interceptors).doChain();
+                return new DefaultProxyChain(targetClass,targetClass.getConstructor().newInstance(),method,args,interceptors).doChain();
             }
         });
     }

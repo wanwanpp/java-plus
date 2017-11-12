@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface ProxyCreator {
 
-    public <T> T getProxy(final Class<?> targetClass, final List<ProxyInterceptor> interceptors);
+    public <T> T createProxy(final Class<?> targetClass, final List<ProxyInterceptor> interceptors);
 }

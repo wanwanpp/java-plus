@@ -5,7 +5,7 @@ package aop;
  */
 public interface ProxyInterceptor {
 
-    Object intercept(ProxyInterceptorChain chain) throws Throwable;
+    Object intercept(DefaultProxyChain chain) throws Throwable;
 
     boolean support();
 }

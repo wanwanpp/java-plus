@@ -5,4 +5,6 @@ package com.wp.dao;
  */
 public interface UserDao {
     void say();
+
+
 }

@@ -7,15 +7,15 @@ import java.util.List;
 /**
  * Created by 王萍 on 2017/11/11 0011.
  */
-public class ProxyInterceptorChain {
+public class DefaultProxyChain {
 
-    private List<ProxyInterceptor> interceptors = new ArrayList<>();
-    private int interceptorIndex = 0;
+    protected List<ProxyInterceptor> interceptors = new ArrayList<ProxyInterceptor>();
+    protected int interceptorIndex = 0;
 
-    private Class<?> targetClass;
-    private Object targetObject;
-    private Method method;
-    private Object[] params;
+    protected Class<?> targetClass;
+    protected Object targetObject;
+    protected Method method;
+    protected Object[] params;
 
     public Class<?> getTargetClass() {
         return targetClass;
@@ -29,13 +29,14 @@ public class ProxyInterceptorChain {
         return params;
     }
 
-    public ProxyInterceptorChain(Class<?> targetClass, Object targetObject, Method method, Object[] params, List<ProxyInterceptor> interceptors) {
+    public DefaultProxyChain(Class<?> targetClass, Object targetObject, Method method, Object[] params, List<ProxyInterceptor> interceptors) {
         this.targetClass = targetClass;
         this.targetObject = targetObject;
         this.method = method;
         this.params = params;
         this.interceptors = interceptors;
     }
+
 
     public Object doChain() throws Throwable {
 
