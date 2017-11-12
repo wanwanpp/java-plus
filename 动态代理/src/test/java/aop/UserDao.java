@@ -1,4 +1,4 @@
-package aop.test;
+package aop;
 
 /**
  * Created by 王萍 on 2017/11/11 0011.

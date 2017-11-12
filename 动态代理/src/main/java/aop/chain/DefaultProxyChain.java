@@ -1,4 +1,6 @@
-package aop;
+package aop.chain;
+
+import aop.interceptor.ProxyInterceptor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

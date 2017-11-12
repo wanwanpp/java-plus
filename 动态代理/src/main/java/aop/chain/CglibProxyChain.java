@@ -1,5 +1,6 @@
-package aop;
+package aop.chain;
 
+import aop.interceptor.ProxyInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;

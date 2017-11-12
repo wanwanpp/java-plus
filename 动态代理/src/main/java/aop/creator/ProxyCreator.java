@@ -1,4 +1,6 @@
-package aop;
+package aop.creator;
+
+import aop.interceptor.ProxyInterceptor;
 
 import java.util.List;
 

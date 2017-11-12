@@ -1,7 +1,7 @@
-package aop.test;
+package aop;
 
 
-import aop.AbstractProxyInterceptor;
+import aop.interceptor.AbstractProxyInterceptor;
 
 import java.lang.reflect.Method;
 

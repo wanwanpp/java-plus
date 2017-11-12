@@ -1,4 +1,6 @@
-package aop;
+package aop.interceptor;
+
+import aop.chain.DefaultProxyChain;
 
 import java.lang.reflect.Method;
 /**
