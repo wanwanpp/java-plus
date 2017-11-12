@@ -5,16 +5,16 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by 王萍 on 2017/2/10 0010.
  */
 public class ClassPathXmlApplicationContext implements BeanFactory {
 
-    private static final Map<String, Object> beanMap = new HashMap<String, Object>();
+    private static final Map<String, Object> beanMap = new ConcurrentHashMap<String, Object>();
 
     public ClassPathXmlApplicationContext(String xmlPath) throws Exception {
         SAXBuilder sb = new SAXBuilder();
