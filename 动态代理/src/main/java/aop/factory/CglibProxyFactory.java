@@ -6,8 +6,8 @@ package aop.factory;
 public class CglibProxyFactory<T> extends AbstractProxyFactory<T> {
 
     @Override
-    public T getProxy(Class<?> targetClass) {
-        proxy = this.cglibCreator.createProxy(targetClass, interceptors);
+    public T getProxy() {
+        proxy = this.cglibCreator.createProxy(getTClass(), interceptors);
         return proxy;
     }
 }

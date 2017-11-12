@@ -15,13 +15,13 @@ public class TestAop {
 
         CglibProxyFactory<UserDao> proxyFactory = new CglibProxyFactory<UserDao>();
         proxyFactory.addInterceptor(new TimeMonitorProxy());
-        Dao proxy = proxyFactory.getProxy(UserDao.class);
+        Dao proxy = proxyFactory.getProxy();
         proxy.insert();
 //        proxy.select();
 
         System.out.println("----------------------------------");
         proxyFactory.addInterceptor(new TimeMonitorProxy());
-        proxy = proxyFactory.getProxy(UserDao.class);
+        proxy = proxyFactory.getProxy();
         proxy.insert();
     }
 }
