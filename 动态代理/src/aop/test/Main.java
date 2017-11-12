@@ -15,7 +15,7 @@ public class Main {
         List<ProxyInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new TimeMonitorProxy());
         interceptors.add(new TimeMonitorProxy());
-        Dao proxy = ProxyFactory.getProxy(new UserDao(), interceptors);
+        Dao proxy = ProxyFactory.getProxy(UserDao.class, interceptors);
         proxy.insert();
         proxy.select();
     }
