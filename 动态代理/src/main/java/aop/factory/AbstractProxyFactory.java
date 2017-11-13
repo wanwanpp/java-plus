@@ -4,7 +4,6 @@ import aop.creator.CglibCreator;
 import aop.creator.JdkCreator;
 import aop.interceptor.ProxyInterceptor;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +28,5 @@ public abstract class AbstractProxyFactory<T> {
         this.interceptors.remove(interceptor);
     }
 
-    protected Class<T> getTClass(){
-        Class <T> targetClass = (Class <T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        return targetClass;
-    }
-
-    public abstract <T> T getProxy();
+    public abstract  T getProxy(Class<?> targetClass);
 }

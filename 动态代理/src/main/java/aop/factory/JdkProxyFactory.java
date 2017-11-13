@@ -6,8 +6,8 @@ package aop.factory;
 public class JdkProxyFactory<T> extends AbstractProxyFactory<T> {
 
     @Override
-    public T getProxy() {
-        proxy = this.jdkCreator.createProxy(getTClass(), interceptors);
+    public T getProxy(Class<?> targetClass) {
+        proxy = this.jdkCreator.createProxy(targetClass, interceptors);
         return proxy;
     }
 }
