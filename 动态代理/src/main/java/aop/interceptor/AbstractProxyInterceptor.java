@@ -6,6 +6,10 @@ import java.lang.reflect.Method;
 /**
  * Created by 王萍 on 2017/11/11 0011.
  */
+//interceptor的拦截还可以提供不同的逻辑。
+// 例如：1.  只写before(targetClass, method, params); result = chain.doChain();就和spring aop的aop:before的实现一样。
+    //2. 只写result = chain.doChain();  after(targetClass, method, params, result);就和spring aop的aop:after的实现一样。
+
 public abstract class AbstractProxyInterceptor implements ProxyInterceptor {
     @Override
     public Object intercept(DefaultProxyChain chain) throws Throwable {
