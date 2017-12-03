@@ -46,7 +46,7 @@ public class ServerHandler implements Runnable {
                     out.println("服务器：您的密码输入错误。");
                 }
             }
-            System.out.println("完成认证，用户名为："+user+",密码为："+pwd);
+            System.out.println("完成认证，用户名为：" + user + ",密码为：" + pwd);
 //            while (true) {
 //                body = in.readLine();
 //                if (body == null) break;
