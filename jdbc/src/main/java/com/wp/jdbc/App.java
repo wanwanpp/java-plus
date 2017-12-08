@@ -8,7 +8,6 @@ import java.sql.*;
 
 public class App {
 
-
     Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
