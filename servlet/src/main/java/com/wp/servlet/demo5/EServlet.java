@@ -18,13 +18,14 @@ public class EServlet extends HttpServlet {
 		//JAVAEE提供了一个方法,这个方法同时可以做 以上两件事.
 		response.setContentType("text/html;charset=utf-8");
 
+		System.out.println("在EServlet中");
 		//1 获得字符流
 		PrintWriter pw = response.getWriter();
 		//2 发送中文
 		pw.print("你好 世界!");
 
 		//问题: 同时使用两种流 会出现问题
-		response.getOutputStream().write("haha".getBytes());
+//		response.getOutputStream().write("haha".getBytes());
 
 	}
 
