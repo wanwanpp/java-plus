@@ -10,7 +10,7 @@ public class JavaPromise {
     public static void main(String[] args) throws Throwable, ExecutionException {
         // 两个线程的线程池  
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        //jdk1.8之前的实现方式  
+
         CompletableFuture<String> future = CompletableFuture.supplyAsync(new Supplier<String>() {
             @Override
             public String get() {
