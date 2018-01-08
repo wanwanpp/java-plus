@@ -19,7 +19,7 @@ public class ServerSocketChannelDemo {
         serverSocketChannel.configureBlocking(false);
 
         while (true) {
-            //socketChannel.read()      xocketChannel.write()
+            //socketChannel.read()      socketChannel.write()
             SocketChannel socketChannel = serverSocketChannel.accept();
             if (socketChannel != null) {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(512);
