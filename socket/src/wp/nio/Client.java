@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.Scanner;
 
 public class Client {
 
@@ -23,12 +24,13 @@ public class Client {
             sc = SocketChannel.open();
             //进行连接
             sc.connect(address);
+            Scanner scanner = new Scanner(System.in);
             while (true) {
-                //定义一个字节数组，然后使用系统录入功能：
-                byte[] bytes = new byte[1024];
-                System.in.read(bytes);
-                //把数据放到缓冲区中
-                buf.put(bytes);
+                String str = scanner.next();
+                if (str.equals("q")){
+                    break;
+                }
+                buf.put(str.getBytes());
                 //对缓冲区进行复位
                 buf.flip();
                 //写出数据
