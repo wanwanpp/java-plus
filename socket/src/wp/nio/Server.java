@@ -3,10 +3,7 @@ package wp.nio;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 
 public class Server implements Runnable {
@@ -29,6 +26,7 @@ public class Server implements Runnable {
             ssc.bind(new InetSocketAddress(port));
             //5 把服务器通道注册到多路复用器上，并且监听阻塞事件
             ssc.register(this.seletor, SelectionKey.OP_ACCEPT);
+            this.seletor.keys().forEach(key -> System.out.println("感兴趣的事件：" + Integer.toBinaryString(key.interestOps()) + "   就绪事件：" + key.readyOps()));
             System.out.println("Server start, port :" + port);
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,14 +39,16 @@ public class Server implements Runnable {
             try {
                 //1 必须要让多路复用器开始监听
                 this.seletor.select();
+                System.out.println(this.seletor.keys().size());
                 //2 返回多路复用器已经选择的结果集
                 Iterator<SelectionKey> keys = this.seletor.selectedKeys().iterator();
                 //3 进行遍历
                 while (keys.hasNext()) {
                     //4 获取一个选择的元素
                     SelectionKey key = keys.next();
-                    //5 直接从容器中移除就可以了
+                    //5 用掉后从容器中移除
                     keys.remove();
+//                    System.out.println("感兴趣的事件：" + Integer.toBinaryString(key.interestOps()) + "   就绪事件：" + Integer.toBinaryString(key.readyOps()));
                     //6 如果是有效的
                     if (key.isValid()) {
                         //7 如果为阻塞状态
@@ -71,9 +71,15 @@ public class Server implements Runnable {
         }
     }
 
-    private void write(SelectionKey key) {
-        //ServerSocketChannel ssc =  (ServerSocketChannel) key.channel();
-        //ssc.register(this.seletor, SelectionKey.OP_WRITE);
+    private void write(SelectionKey key) throws IOException {
+        SocketChannel sc = (SocketChannel) key.channel();
+        System.out.println("进入write");
+        writeBuf.clear();
+        writeBuf.put("王牌".getBytes());
+        //一定要flip。
+        writeBuf.flip();
+        sc.write(writeBuf);
+        sc.register(this.seletor, SelectionKey.OP_READ);
     }
 
     private void read(SelectionKey key) {
@@ -99,8 +105,11 @@ public class Server implements Runnable {
             //8 打印结果
             String body = new String(bytes).trim();
             System.out.println("Server : " + body);
+            sc.register(this.seletor, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+//            sc.register(this.seletor, SelectionKey.OP_READ );
             // 9..可以写回给客户端数据
-//            ByteBuffer bufferResponse = ByteBuffer.allocate(1024).put("123".getBytes());
+//            ByteBuffer bufferResponse = ByteBuffer.allocate(1024).put("王盘".getBytes());
+//            bufferResponse.flip();
 //            sc.write(bufferResponse);
         } catch (IOException e) {
             e.printStackTrace();

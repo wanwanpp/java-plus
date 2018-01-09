@@ -28,9 +28,7 @@ public class ServerHandler implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             out = new PrintWriter(this.socket.getOutputStream(), true);
-            String body = null;
-
-            body = in.readLine();
+            String body = in.readLine();
             //       wanwanpp:980325
             String[] nameAndPwd = body.split(":");
             String user = nameAndPwd[0];

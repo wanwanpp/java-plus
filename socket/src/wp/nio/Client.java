@@ -35,15 +35,19 @@ public class Client {
                 sc.write(buf);
                 //清空缓冲区数据
                 buf.clear();
+
 //                sc.read(readBuf);
-//                readBuf.flip();
-//                //6 根据缓冲区的数据长度创建相应大小的byte数组，接收缓冲区的数据
-//                byte[] byteRead = new byte[readBuf.remaining()];
-//                //7 接收缓冲区数据
-//                readBuf.get(byteRead);
-//                //8 打印结果
-//                String body = new String(byteRead).trim();
-//                System.out.println("客户端收到： : " + body);
+//                System.out.println(new String(readBuf.array(),"utf-8"));
+
+                sc.read(readBuf);
+                readBuf.flip();
+                //6 根据缓冲区的数据长度创建相应大小的byte数组，接收缓冲区的数据
+                byte[] byteRead = new byte[readBuf.remaining()];
+                //7 接收缓冲区数据
+                readBuf.get(byteRead);
+                //8 打印结果
+                String body = new String(byteRead).trim();
+                System.out.println("客户端收到: " + body);
             }
         } catch (IOException e) {
             e.printStackTrace();
