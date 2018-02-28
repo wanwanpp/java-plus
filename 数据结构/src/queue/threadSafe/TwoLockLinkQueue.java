@@ -41,11 +41,16 @@ public class TwoLockLinkQueue<E> {
 
     public TwoLockLinkQueue() {
         //使用了一个哨兵节点，所以真正poll时取出的是第二个节点（哨兵节点后一个节点）的value。
-        Node<E> sentinelNode = new Node<E>(null);
-        headNode = sentinelNode;
-        tailNode = sentinelNode;
+//        Node<E> sentinelNode = new Node<E>(null);
+//        headNode = sentinelNode;
+//        tailNode = sentinelNode;
+
+        //不使用哨兵
+        headNode = null;
+        tailNode = null;
     }
 
+    //不使用哨兵
     public boolean offer(E e) {
         if (e == null) {
             return false;
@@ -53,28 +58,63 @@ public class TwoLockLinkQueue<E> {
         Node<E> newNode = new Node<>(e);
         tailLock.lock();
         try {
-            tailNode.setNext(newNode);
+            if (tailNode != null) {
+                tailNode.setNext(newNode);
+            } else {
+                headNode = newNode;
+            }
             tailNode = newNode;
         } finally {
             tailLock.unlock();
         }
         return true;
     }
-
     public E pool() {
         headLock.lock();
         try {
-            Node<E> newHeadNode = headNode.getNext();
-            if (newHeadNode == null) {
-                return null;
-            } else {
-                headNode = newHeadNode;
-                return newHeadNode.getValue();
+            if (headNode == null) return null;
+            else {
+                Node<E> now = this.headNode;
+                this.headNode = now.getNext();
+                if (headNode == null) {
+                    tailNode = null;
+                }
+                return now.getValue();
             }
         } finally {
             headLock.unlock();
         }
     }
+
+//    使用哨兵
+//public boolean offer( E e ) {
+//    if(e == null) {
+//        return false;
+//    }
+//    Node<E> newNode = new Node<E>(e);
+//    tailLock.lock();
+//    try {
+//        tailNode.setNext(newNode);
+//        tailNode = newNode;
+//    } finally {
+//        tailLock.unlock();
+//    }
+//    return true;
+//}
+//  public E pool() {
+//        headLock.lock();
+//        try {
+//            Node<E> newHeadNode = headNode.getNext();
+//            if (newHeadNode == null) {
+//                return null;
+//            } else {
+//                headNode = newHeadNode;
+//                return newHeadNode.getValue();
+//            }
+//        } finally {
+//            headLock.unlock();
+//        }
+//    }
 
     static class TestClass {
         static AtomicInteger count = new AtomicInteger(0);
@@ -112,10 +152,9 @@ public class TwoLockLinkQueue<E> {
                 public void run() {
                     while (!Thread.interrupted()) {
                         Integer value = queue.pool();
-                        if (value != null) {
+                        if (value != null)
                             System.out.println("[" + Thread.currentThread() +
                                     "]" + "poll:" + value);
-                        }
                     }
                 }
             }
