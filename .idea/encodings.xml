@@ -2,6 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/jdbc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jdbc/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springIOC简单实现" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springIOC简单实现/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springIOC简单实现/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/动态代理/src/main/java" charset="UTF-8" />
   </component>
 </project>

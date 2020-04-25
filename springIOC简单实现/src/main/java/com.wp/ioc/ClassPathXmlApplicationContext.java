@@ -1,13 +1,13 @@
 package com.wp.ioc;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
-
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * Created by 王萍 on 2017/2/10 0010.
@@ -58,8 +58,6 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
         }
     }
 
-
-    @Override
     public Object getBean(String id) {
         return beanMap.get(id);
     }

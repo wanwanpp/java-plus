@@ -14,7 +14,6 @@ public class ProxyInvocationImpl implements InvocationHandler {
         this.object = object;
     }
 
-    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("为动态代理对象进行代理----before");
         Object returnValue = method.invoke(object, args);

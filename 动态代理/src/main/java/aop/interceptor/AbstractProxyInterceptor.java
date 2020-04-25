@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
     //2. 只写result = chain.doChain();  after(targetClass, method, params, result);就和spring aop的aop:after的实现一样。
 
 public abstract class AbstractProxyInterceptor implements ProxyInterceptor {
-    @Override
     public Object intercept(DefaultProxyChain chain) throws Throwable {
 
         Object result;
@@ -34,7 +33,6 @@ public abstract class AbstractProxyInterceptor implements ProxyInterceptor {
 
     public abstract void after(Class<?> targetClass, Method method, Object[] params, Object result);
 
-    @Override
     public boolean support() {
         return true;
     }

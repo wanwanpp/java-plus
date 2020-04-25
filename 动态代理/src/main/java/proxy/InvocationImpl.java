@@ -11,7 +11,6 @@ public class InvocationImpl implements InvocationHandler {
         this.student = student;
     }
 
-    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("before method invoke");
         Object returnValue = method.invoke(student, args);
