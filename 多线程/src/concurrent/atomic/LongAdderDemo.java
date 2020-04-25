@@ -32,8 +32,12 @@ public class LongAdderDemo {
         for(int i = 0; i < THREAD_COUNT; i++) {
             completionService.submit(() -> {
                 for(int j = 0; j < 100000; j++) {
-                    // atomicLong.incrementAndGet();
-                    longAdder.increment();
+
+                    // 使用longadder比使用atomicLong性能高，并发越大时，差距越大。
+                    atomicLong.incrementAndGet();
+
+                    //longAdder.increment();
+                    //longAdder.longValue();
                 }
                 return 1L;
             });
