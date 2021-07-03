@@ -9,38 +9,39 @@ import java.lang.reflect.Proxy;
 
 public class Main {
 
+    //public static void main(String[] args) {
+    //    Student student = new Student();
+    //    // 代理类的动作
+    //    InvocationImpl invocation = new InvocationImpl(student);
+    //    ClassLoader classLoader = student.getClass().getClassLoader();
+    //    Class<?>[] interfaces = student.getClass().getInterfaces();
+    //    Study proxyInstance = (Study) Proxy.newProxyInstance(classLoader,interfaces , invocation);
+    //    System.out.println("动态代理对象的类型："+proxyInstance.getClass().getName());
+    //    proxyInstance.read();
+    //    System.out.println("---------------------------------");
+    //    proxyInstance.write();
+    //
+    //    createProxyClassFile();
+    //}
+
     public static void main(String[] args) {
         Student student = new Student();
         InvocationImpl invocation = new InvocationImpl(student);
         ClassLoader classLoader = student.getClass().getClassLoader();
         Class<?>[] interfaces = student.getClass().getInterfaces();
-        Study proxyInstance = (Study) Proxy.newProxyInstance(classLoader,interfaces , invocation);
-        System.out.println("动态代理对象的类型："+proxyInstance.getClass().getName());
-        proxyInstance.read();
-        System.out.println("---------------------------------");
+        Study proxyInstance = (Study) Proxy.newProxyInstance(classLoader, interfaces, invocation);
+
         proxyInstance.write();
 
-        createProxyClassFile();
+        //代理两层
+        Study proxyProxyInstance = (Study)Proxy.newProxyInstance(proxyInstance.getClass().getClassLoader(),
+            proxyInstance.getClass().getInterfaces(),
+            new ProxyInvocationImpl(proxyInstance));
+        System.out.println("动态代理对象的类型："+proxyInstance.getClass().getName());
+        proxyProxyInstance.read();
+        System.out.println("---------------------------------");
+        proxyProxyInstance.write();
     }
-
-//    public static void main(String[] args) {
-//        Student student = new Student();
-//        InvocationImpl invocation = new InvocationImpl(student);
-//        ClassLoader classLoader = student.getClass().getClassLoader();
-//        Class<?>[] interfaces = student.getClass().getInterfaces();
-//        Study proxyInstance = (Study) Proxy.newProxyInstance(classLoader, interfaces, invocation);
-//
-//        proxyInstance.write();
-////        proxyInstance.write();
-////        proxyInstance.write();
-//
-//        //代理两层
-////        Study proxyProxyInstance =(Study) Proxy.newProxyInstance(proxyInstance.getClass().getClassLoader(), proxyInstance.getClass().getInterfaces(), new ProxyInvocationImpl(proxyInstance));
-////        System.out.println("动态代理对象的类型："+proxyInstance.getClass().getName());
-////        proxyProxyInstance.read();
-////        System.out.println("---------------------------------");
-////        proxyProxyInstance.write();
-//    }
 
 
     private static void createProxyClassFile() {
